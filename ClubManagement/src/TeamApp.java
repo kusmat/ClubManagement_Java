@@ -1,48 +1,41 @@
-import java.awt.EventQueue;
-
-//Setting up window
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.awt.event.ActionEvent;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+//Setting up window
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 
 //Tools to create table and get database data
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollPane;
-import java.awt.Color;
-import javax.swing.ScrollPaneConstants;
-import java.awt.SystemColor;
-import java.awt.Font;
-import java.awt.Frame;
-
-import javax.swing.ListSelectionModel;
-import javax.swing.border.LineBorder;
-import java.awt.Component;
-import java.awt.Dimension;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class TeamApp {
 
@@ -51,7 +44,7 @@ public class TeamApp {
 	private static TeamApp window;
 	private DefaultTableModel dtm;
 
-	JFrame frmFootballClub;
+	JFrame frmClubManagement;
 
 	// NP - new player tab
 	// PL - player's list tab
@@ -96,9 +89,9 @@ public class TeamApp {
 	private JButton btnTodayNP;
 	
 	// variables to add mouse listener to text fields and remove initial text from fields.
-		private int txtFieldsCounter = 0;
-		private int txtFieldsNumber = 6;
-		private JTextField[] txtfields = new JTextField[txtFieldsNumber];
+		//private int txtFieldsCounter = 0;
+		//private int txtFieldsNumber = 6;
+		//private JTextField[] txtfields = new JTextField[txtFieldsNumber];
 
 	// PL - player's list tab
 	private JPanel panelPlayersListPL;
@@ -166,13 +159,6 @@ public class TeamApp {
 	//setting up invisible to user global variables
 	private int playerID;
 	
-	// Tools to create table and get database data
-	/*
-	 * private ResultSet rs; // Results set definition private DefaultTableModel
-	 * tablemodel; // Default table model to setup table --> like a template.
-	 * private ResultSetMetaData rsMetaData; // This will be getting table columns
-	 * names
-	 */
 
 	/**
 	 * Create the application. Constructor of the class TeamApp
@@ -183,8 +169,8 @@ public class TeamApp {
 		activateActionButtons();
 		new OperationsOnDB().setupDefaultTable(); //removing existing table and creating new one with default data (see OperationsonDB() class).
 
-		// test method to validate date.
-		validateDate(2, 31, 2020);
+		// test method to validate date. //left for future improvement and testing
+		//validateDate(2, 31, 2020);
 
 	}
 
@@ -197,7 +183,7 @@ public class TeamApp {
 			public void run() {
 				try {
 					window = new TeamApp(); // creating new window, which invokes construction of class TeamApp
-					window.frmFootballClub.setVisible(true); // making window visible
+					window.frmClubManagement.setVisible(true); // making window visible
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -213,17 +199,17 @@ public class TeamApp {
 	private void initializeApp() {
 
 		// Initializing the frame with panels and labels
-		frmFootballClub = new JFrame();
-		frmFootballClub.setTitle("Football club - Player's management system.");
-		frmFootballClub.setBackground(Color.WHITE);
-		frmFootballClub.setBounds(100, 100, 919, 476);
-		frmFootballClub.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmClubManagement = new JFrame();
+		frmClubManagement.setTitle("Club Management system.");
+		frmClubManagement.setBackground(Color.WHITE);
+		frmClubManagement.setBounds(100, 100, 919, 476);
+		frmClubManagement.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.setForeground(new Color(0, 51, 153));
 		tabbedPane.setBackground(new Color(255, 255, 255));
-		frmFootballClub.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+		frmClubManagement.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
 		/* P L A Y E R S    L I S T */
 
@@ -262,29 +248,7 @@ public class TeamApp {
 		tableSearchResults.setBorder(new LineBorder(Color.WHITE, 1, true));
 		tableSearchResults.setRowHeight(25);
 		tableSearchResults.getTableHeader().setBackground(new Color(116, 165, 242));
-		tableSearchResults.getTableHeader().setForeground(new Color(255, 255, 255));
-		
-		/********************************************* Some table tools to use in different project possibly.
-		 * tableSearchResults.setModel(new DefaultTableModel( new Object[][] { { null,
-		 * "Kathy", "Star", new Integer(6), "Portland", "1/1/2019" }, { null, "John",
-		 * "Play", new Integer(10), "Portugal", "1/3/2018" }, { null, null, null, null,
-		 * null, null }, { null, null, null, null, null, null }, { null, null, null,
-		 * null, null, null }, { null, null, null, null, null, null }, }, new String[] {
-		 * "Select", "First Name", "Last Name", "Age", "Address", "Start date" }) {
-		 * Class[] columnTypes = new Class[] { Boolean.class, Object.class,
-		 * Object.class, Object.class, Object.class, Object.class };
-		 * 
-		 * public Class getColumnClass(int columnIndex) { return
-		 * columnTypes[columnIndex]; } });
-		 * tableSearchResults.getColumnModel().getColumn(0).setResizable(false);
-		 * tableSearchResults.getColumnModel().getColumn(0).setPreferredWidth(30);
-		 * tableSearchResults.getColumnModel().getColumn(1).setResizable(false);
-		 * tableSearchResults.getColumnModel().getColumn(2).setResizable(false);
-		 * tableSearchResults.getColumnModel().getColumn(3).setResizable(false);
-		 * tableSearchResults.getColumnModel().getColumn(4).setResizable(false);
-		 * tableSearchResults.getColumnModel().getColumn(5).setResizable(false);
-		 ************************************************/
-		
+		tableSearchResults.getTableHeader().setForeground(new Color(255, 255, 255));		
 		
 		// Getting row # of the selected item
 		tableSearchResults.addMouseListener(new MouseAdapter() {
@@ -292,9 +256,6 @@ public class TeamApp {
 			tableSearchResultsSelectedRow = tableSearchResults.getSelectedRow();
 			}
 		});
-
-		
-		// scrollPanePL.setViewportView(tableSearchResults);//DELETE THIS LATER?
 
 		// scroll pane and table
 		scrollPanePL = new JScrollPane(tableSearchResults);
@@ -798,17 +759,6 @@ public class TeamApp {
 
 	private void setupDefaultTable() {
 
-		/*
-		 * This is to create table with default data, but I did not want it. I prefer to
-		 * have empty table to start with. String[] columnNames = { "First Name",
-		 * "Last Name", "Date Of Birth", "Country" }; Object[][] data = { {
-		 * "-------------", "-------------","-------------","-------------",
-		 * "-------------"}, { "-------------",
-		 * "-------------","-------------","-------------", "-------------"} };
-		 * 
-		 * tableSearchResults = new JTable(data, columnNames);
-		 */
-
 		// setting empty data model and table before user searches for data.
 		dtm = new DefaultTableModel();
 		tableSearchResults = new JTable();
@@ -840,17 +790,21 @@ public class TeamApp {
 
 		if (txtFirstNamePL.getText().equals("") & txtLastNamePL.getText().equals("") & txtCountryPL.getText().equals("") & txtAgeFromPL.equals("")& txtAgeToPL.equals("") & comboDOBYearNP.getSelectedItem() == null) {
 
+		//left for testing
 		System.out.println("No name selected, running default query to get all rows.\n");
 
 		selection1.selectDataFromDB();
 		dtm = selection1.getTableModel();
 
 		if (dtm == null) {
-		System.out.println("try again, empty data model");
+		
+			//left for testing
+			System.out.println("try again, empty data model");
 			} 
 		
 		else {
-				System.out.println("No of columns: " + dtm.getColumnCount() + ", rows number: " + dtm.getRowCount());
+			//left for testing	
+			System.out.println("No of columns: " + dtm.getColumnCount() + ", rows number: " + dtm.getRowCount());
 			}
 
 		// ---------------applying table model to the table and proper formatting
@@ -864,7 +818,8 @@ public class TeamApp {
 		}
 
 		else {
-			System.out.println("Looking for players with name: " + txtFirstNamePL.getText() + "\n");
+			//left for testing
+			//System.out.println("Looking for players with name: " + txtFirstNamePL.getText() + "\n");
 			
 			int age_from = 0;
 			int age_to = 100;
@@ -878,10 +833,12 @@ public class TeamApp {
 
 		
 		if (dtm == null) {
+			//left for testing
 			System.out.println("try again, empty data model");
 		}
 		
 		else {
+			//left for testing
 			System.out.println("No of columns: " + dtm.getColumnCount() + ", rows number: " + dtm.getRowCount());
 				}
 
@@ -931,23 +888,15 @@ public class TeamApp {
 			
 					//this button is only active when database data is displayed, so this it ok to use tableSearchResults and tableSearchResultsSelectedRow.
 				if (tableSearchResults.getSelectionModel().isSelectionEmpty() == false){
-					System.out.println("Selected row: " + tableSearchResultsSelectedRow);
-				/*	EditPlayer editPlayer = new EditPlayer();
-					//frmFootballClub.setVisible(false);
-					JDialog d = new JDialog(editPlayer.frame);
-					d.setVisible(true);*/
 					
-					//***************************** START EDIT BLOCK
-					//replace this block below with database query based on playerID in the table, to get all data for editing, not only ones displayed in the table.
-					/*
-					txtFirstNameEP.setText(String.valueOf(tableSearchResults.getValueAt(tableSearchResultsSelectedRow, 0)));
-					txtLastNameEP.setText(String.valueOf(tableSearchResults.getValueAt(tableSearchResultsSelectedRow, 1)));
-					txtAddressEP.setText(String.valueOf(tableSearchResults.getValueAt(tableSearchResultsSelectedRow, 2)));
+					//left for testing
+					System.out.println("Selected row: " + tableSearchResultsSelectedRow);
+	
 					playerID = (int)tableSearchResults.getValueAt(tableSearchResultsSelectedRow, 4);
-					System.out.println(playerID);
-					*/
-					playerID = (int)tableSearchResults.getValueAt(tableSearchResultsSelectedRow, 4);
+					
+					//left for testing
 					System.out.println("Player ID for editing: " + playerID);
+					
 					OperationsOnDB record = new OperationsOnDB();
 					ArrayList tempList = new ArrayList();
 					tempList = record.selectRowDataFromDBforEditing(playerID);
@@ -963,10 +912,19 @@ public class TeamApp {
 					txtAddressEP.setText((String)tempList.get(3));
 					comboMaleFemaleEP.setSelectedItem((String)tempList.get(4));
 					
-					//start date
-					comboStartDayEP.setSelectedItem((Integer.valueOf(((String)tempList.get(5)).split("-")[2])));
-					comboStartMonthEP.setSelectedItem((Integer.valueOf(((String)tempList.get(5)).split("-")[1])));
-					comboStartYearEP.setSelectedItem((Integer.valueOf(((String)tempList.get(5)).split("-")[0])));
+					//start date - it is not required as the entry, so check if it is entered is necessary.
+					String comboStartEPvalue = (String)tempList.get(5);
+										
+					if (comboStartEPvalue == "null"){
+						comboStartDayEP.setSelectedIndex(0);
+						comboStartMonthEP.setSelectedIndex(0);
+						comboStartYearEP.setSelectedIndex(0);
+						}
+					else {
+						comboStartDayEP.setSelectedItem(Integer.valueOf((comboStartEPvalue.split("-")[2])));
+						comboStartMonthEP.setSelectedItem(Integer.valueOf((comboStartEPvalue.split("-")[1])));
+						comboStartYearEP.setSelectedItem(Integer.valueOf((comboStartEPvalue.split("-")[0])));
+					}
 					
 					txtAgesEP.setText((String)tempList.get(6));
 					
@@ -980,11 +938,6 @@ public class TeamApp {
 					tabbedPane.setEnabledAt(2, true);
 					tabbedPane.setSelectedComponent(panelEditPlayerEP);
 					
-					
-					//JDialog d = new JDialog(editPlayer.frame, "Edit Player's details");
-					//d.setVisible(true);
-					
-					
 				}
 			
 			}
@@ -997,11 +950,16 @@ public class TeamApp {
 			public void actionPerformed(ActionEvent e) {
 
 				if (tableSearchResults.getSelectionModel().isSelectionEmpty() == false){
+					//left for testing
 					System.out.println("Selected row: " + tableSearchResultsSelectedRow);
+					
 					playerID = (int)tableSearchResults.getValueAt(tableSearchResultsSelectedRow, 4);
+					//left for testing
 					System.out.println(playerID);
-				// selecting data from database
-				OperationsOnDB remove1 = new OperationsOnDB();
+
+					// selecting data from database
+				
+					OperationsOnDB remove1 = new OperationsOnDB();
 				int id = playerID;
 				remove1.removeRecordFromDB(id);}
 				
@@ -1065,7 +1023,7 @@ public class TeamApp {
 				// if first name is not filled out, error will occur and query will not run
 
 				valid = false;
-				JOptionPane.showMessageDialog(frmFootballClub, "First Name cannot be empty 	field.");
+				JOptionPane.showMessageDialog(frmClubManagement, "First Name cannot be empty 	field.");
 
 			}
 
@@ -1073,35 +1031,35 @@ public class TeamApp {
 
 				// if last name is not filled out, error will occur and query will not run
 				valid = false;
-				JOptionPane.showMessageDialog(frmFootballClub, "Last Name cannot be empty field.");
+				JOptionPane.showMessageDialog(frmClubManagement, "Last Name cannot be empty field.");
 			}
 
 			else if (txtAddressNP.getText().equals("")) {
 
 				// if address name is not filled out, error will occur and query will not run
 				valid = false;
-				JOptionPane.showMessageDialog(frmFootballClub, "Address cannot be empty	field.");
+				JOptionPane.showMessageDialog(frmClubManagement, "Address cannot be empty	field.");
 			}
 
 			else if (comboDOBYearNP.getSelectedItem() == null) {
 
 				// if birth year is not filled out, error will occur and query will not run
 				valid = false;
-				JOptionPane.showMessageDialog(frmFootballClub, "Year of birth cannot be empty field.");
+				JOptionPane.showMessageDialog(frmClubManagement, "Year of birth cannot be empty field.");
 			}
 
 			else if (comboDOBMonthNP.getSelectedItem() == null) {
 
 				// if birth month is not filled out, error will occur and query will not run
 				valid = false;
-				JOptionPane.showMessageDialog(frmFootballClub, "Month of birth cannot be empty field.");
+				JOptionPane.showMessageDialog(frmClubManagement, "Month of birth cannot be empty field.");
 			}
 
 			else if (comboDOBDayNP.getSelectedItem() == null) {
 
 				// if birth day is not filled out, error will occur and query will not run
 				valid = false;
-				JOptionPane.showMessageDialog(frmFootballClub, "Day of birth cannot be empty field.");
+				JOptionPane.showMessageDialog(frmClubManagement, "Day of birth cannot be empty field.");
 
 			}
 
@@ -1119,7 +1077,7 @@ public class TeamApp {
 				dob = LocalDate.of(doby, dobm, dobd);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(frmFootballClub, "Invalid date: " + e1.getMessage());
+				JOptionPane.showMessageDialog(frmClubManagement, "Invalid date: " + e1.getMessage());
 				valid = false;
 			}
 			
@@ -1129,20 +1087,11 @@ public class TeamApp {
 			
 			if (valid == true) {
 				
-				Person person = new Person(fn, ln, dob, addr);
-				JOptionPane.showMessageDialog(frmFootballClub, "Added new player to the database.");
+				//Person person = new Person(fn, ln, dob, addr); //This is added for future development
+				JOptionPane.showMessageDialog(frmClubManagement, "Added new player to the database.");
 
 			}
-			/*
-			 * //information for debugging. else {
-			 * System.out.println("Please correct data and proceed"); }
-			 */
-
-			// person.calculateAge((int)comboDOBDayNP.getSelectedItem(),
-			// (int)comboDOBMonthNP.getSelectedItem(),
-			// (int)comboDOBYearNP.getSelectedItem());
-
-		}
+	}
 	});
 
 		//***************** Function to remove default content text "Enter here..." from cell when user
@@ -1152,14 +1101,20 @@ public class TeamApp {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			
+			// left for testing
 			// System.out.println(txtfields[txtFieldsCounter - 1].getClass().getName());
 			String text = txtFirstNameNP.getText();
 			if (text.equals("Enter here...")) {
-				System.out.println(text + txtFirstNameNP.getWidth());
-//										txtFirstNameNP.setText("");
+			
+			//left for testing
+			System.out.println(text + txtFirstNameNP.getWidth());
+			
+			txtFirstNameNP.setText("");
 				txtFirstNameNP.selectAll();
 			} else {
-				System.out.println("Sorry error");
+				//left for testing
+				//System.out.println("Sorry error");
 			}
 
 		}
@@ -1175,11 +1130,11 @@ public class TeamApp {
 
 			String text = txtLastNameNP.getText();
 			if (text.equals("Enter here...")) {
-				System.out.println(text);
-
+				
 				txtLastNameNP.selectAll();
 			} else {
-				System.out.println("Sorry error");
+				//left for testing
+				//System.out.println("Sorry error");
 			}
 
 		}
@@ -1223,7 +1178,7 @@ public class TeamApp {
 				dob = LocalDate.of(doby, dobm, dobd);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(frmFootballClub, "Invalid date: " + e1.getMessage());
+				JOptionPane.showMessageDialog(frmClubManagement, "Invalid date: " + e1.getMessage());
 				valid = false;
 			}
 			
@@ -1279,7 +1234,8 @@ public class TeamApp {
 				
 		public void actionPerformed(ActionEvent e) {
 
-		System.out.println("test of the update");
+		
+		//System.out.println("Updating record");//left for testing
 		tabbedPane.setSelectedComponent(panelPlayersListPL);
 		tabbedPane.setEnabledAt(0, true);
 		tabbedPane.setEnabledAt(1, true);
@@ -1292,7 +1248,7 @@ public class TeamApp {
 				
 		public void actionPerformed(ActionEvent e) {
 
-		System.out.println("canceling");
+		System.out.println("canceling - no updates will take effect");//left for testing
 		tabbedPane.setSelectedComponent(panelPlayersListPL);
 		tabbedPane.setEnabledAt(0, true);
 		tabbedPane.setEnabledAt(1, true);
@@ -1303,7 +1259,11 @@ public class TeamApp {
 }
 
 //***** to validate entry of the date - maybe move outside of this function.
-	private void validateDate(int month, int day, int year) {
+	//This function to be used to manually check leap year and date validity. 
+	//It is not required with java.time.LocalDate so it is never used in this program and but will be used in the future development.
+	
+	 /*private void validateDate(int month, int day, int year) {
+	 
 
 		boolean isLeap = false;
 
@@ -1323,30 +1283,30 @@ public class TeamApp {
 
 		case 31:
 			if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
-				System.out.println("All OK! - month with 31 days");
+				System.out.println("All OK! - month with 31 days");//left for testing
 			else
-				System.out.println("Not OK! - not a month with 31 days");
+				System.out.println("Not OK! - not a month with 31 days");//left for testing
 			break;
 
 		case 30:
 			if (month != 2)
-				System.out.println("All OK! - month no feb");
+				System.out.println("All OK! - month no feb");//left for testing
 			else
-				System.out.println("Not OK! - this is feb, max 29 days");
+				System.out.println("Not OK! - this is feb, max 29 days");//left for testing
 
 			break;
 
 		case 29:
 			if (month != 2 || isLeap)
-				System.out.println("All OK! - leap year");
+				System.out.println("All OK! - leap year");//left for testing
 			else
-				System.out.println("Not OK! - This is feb, but not a leap year, max is 28 days");
+				System.out.println("Not OK! - This is feb, but not a leap year, max is 28 days");//left for testing
 			break;
 
 		default:
-			System.out.println("OK");
+			System.out.println("OK");//left for testing
 			break;
 		}
 
-	}
+	}*/
 }

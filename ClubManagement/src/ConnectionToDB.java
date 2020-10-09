@@ -5,23 +5,35 @@ import java.sql.SQLException;
 
 public class ConnectionToDB {
 
-	private final String url = "jdbc:postgresql://localhost/postgres";
-	private final String user = "tester";
-	private final String password = "retset@123";
+	//Connection variables
 
+	private final String url = "jdbc:postgresql://isilo.db.elephantsql.com:5432/";
+	private final String user = "mahzcfsd";
+	private final String password = "HtvYrzp7cPq7q5DKOeLXoLeLZ6M6X7lq";
+
+	//variable to store query output 
+	
 	private ResultSet rs;
-
+	
+	 static {
+		    try {
+		      Class.forName("org.postgresql.Driver");
+		    } catch (ClassNotFoundException e) {
+		      throw new IllegalStateException("BaseDataSource is unable to load org.postgresql.Driver. Please check if you have proper PostgreSQL JDBC Driver jar on the classpath", e);
+		    }
+		  }
 	/**
 	 * Connect to the PostgreSQL database
 	 *
 	 * @return a Connection object
 	 */
+
 	public Connection connect() {
 		Connection conn = null;
 
 		try {
 			conn = DriverManager.getConnection(url, user, password);
-			System.out.println("Connected to the PostgreSQL server successfully.");
+			//System.out.println("Connected to the PostgreSQL server successfully.");
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -30,41 +42,7 @@ public class ConnectionToDB {
 		return conn;
 	}
 
-
-
-	// public void selectDataFromDB(String filter){
-
-	/*public void selectDataFromDB() {
-		String SQL = "SELECT * "
-				// + "FROM public.\"Players\"";
-				+ "FROM public.\"Players\"" + "WHERE \"PlayerName\" IS NOT NULL ";
-
-		try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(SQL)) {
-
-			// pstmt.setString(1, filter);
-			rs = pstmt.executeQuery();
-			displayQueryResults(rs);
-			// finishing connection
-
-			conn.close();
-
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
-*/
-	
-	/*public void displayQueryResults(ResultSet rs) throws SQLException {
-
-		System.out.println("\nList of all players is as follows:\n");
-
-		while (rs.next()) {
-
-			System.out.println("Player: " + rs.getString("PlayerName") + "\t");
-
-		}
-	}
-	*/
+	//function to return result set
 
 	public ResultSet getResultSet() {
 		return rs;
