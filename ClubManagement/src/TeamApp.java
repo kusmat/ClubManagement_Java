@@ -1087,7 +1087,7 @@ public class TeamApp {
 			
 			if (valid == true) {
 				
-				//Person person = new Person(fn, ln, dob, addr); //This is added for future development
+				Person person = new Person(fn, ln, dob, addr); //This is added for future development
 				JOptionPane.showMessageDialog(frmClubManagement, "Added new player to the database.");
 
 			}
